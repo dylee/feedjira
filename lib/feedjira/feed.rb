@@ -1,5 +1,7 @@
 module Feedjira
   class Feed
+    @@proxy = nil
+
     def self.parse_with(parser, xml, &block)
       parser.parse xml, &block
     end
@@ -77,7 +79,7 @@ module Feedjira
     end
 
     def self.connection(url)
-      Faraday.new(url: url) do |conn|
+      Faraday.new(url: url, proxy: @@proxy) do |conn|
         conn.use FaradayMiddleware::FollowRedirects, limit: 3
         conn.adapter :net_http
       end
